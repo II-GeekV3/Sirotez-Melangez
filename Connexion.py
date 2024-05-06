@@ -13,7 +13,8 @@ import re
 # Importation de la fonction path depuis le module os pour manipuler les chemins de fichiers
 from os import path
 # Importation de la classe BooleanVar depuis le module tkinter pour stocker des valeurs booléennes
-
+import Kamikaze
+import Blackjack
 # Initialisation de la connexion à la base de données
 dataManager = DataManager('localhost', 'root', '', 's&m')
 dataManager.Connect()
