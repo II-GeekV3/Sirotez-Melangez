@@ -1,3 +1,4 @@
+from PIL import ImageTk, Image
 # Importation de la classe DataManager depuis le module DataManager
 from DataManager import DataManager
 # Importation de toutes les classes et fonctions de tkinter
@@ -12,9 +13,11 @@ import hashlib
 import re
 # Importation de la fonction path depuis le module os pour manipuler les chemins de fichiers
 from os import path
+
+import os 
 # Importation de la classe BooleanVar depuis le module tkinter pour stocker des valeurs booléennes
-import Kamikaze
-import Blackjack
+#import Kamikaze
+#import Blackjack
 # Initialisation de la connexion à la base de données
 dataManager = DataManager('localhost', 'root', '', 's&m')
 dataManager.Connect()
@@ -29,7 +32,7 @@ def apply_theme():
 def register_user(username, password, verify_password, register_window):
     try:
         # Vérification si le mot de passe répond aux exigences
-        if not (re.search("[a-z]", password) and re.search("[A-Z]", password) and re.search("[!@#$%^&*(),.?\":{}|<>]", password) and len(password) >= 8):
+        if not (re.search("[a-z]", password) and re.search("[A-Z]", password) and re.search("[!@#$%^&*()_\-+,.?\":{}|<>]", password) and len(password) >= 8):
             messagebox.showerror("Error", "Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 caractère spécial et doit avoir une longueur d'au moins 8 caractères.")
             return
         
@@ -127,6 +130,12 @@ def show_password():
     else:
         champ2.configure(show="*")
 
+def launch_kamikaze_game():
+    os.system("python Kamikaze.py")
+
+def launch_blackjack_game():
+    os.system("python Blackjack.py")
+
 # Fonction pour afficher la page d'accueil
 def home_page(username):
     def modify_user():
@@ -136,7 +145,7 @@ def home_page(username):
 
             try:
                 # Vérification si le mot de passe répond aux exigences
-                if not (re.search("[a-z]", new_password) and re.search("[A-Z]", new_password) and re.search("[!@#$%^&*(),.?\":{}|<>]", new_password) and len(new_password) >= 8):
+                if not (re.search("[a-z]", new_password) and re.search("[A-Z]", new_password) and re.search("[!@#$%^&*()_\-+,.?\":{}|<>]", new_password) and len(new_password) >= 8):
                     messagebox.showerror("Error", "Le mot de passe doit contenir au moins 1 majuscule, 1 minuscule, 1 caractère spécial et doit avoir une longueur d'au moins 8 caractères.")
                     return
 
@@ -178,18 +187,38 @@ def home_page(username):
 
     # Créer une nouvelle fenêtre pour la page d'accueil
     home_window = Toplevel()
-    home_window.geometry("600x400")
+    home_window.geometry("1000x900")
     home_window.title("S&M Accueil")
 
     frame = ctk.CTkFrame(master=home_window)
-    frame.pack(pady=20, padx=60, fill="both", expand=True)
+    frame.pack(pady=(20, 5), padx=60, fill="both", expand=True)
 
     # Ajouter du contenu à la page d'accueil
     label = ctk.CTkLabel(master=frame, text=f"Bienvenue sur Sirtoez&Melangez, {username}!")
     label.pack(pady=20)
 
-    # Créer le menu
+    global blackjack_image, kamikaze_image, commingsoon_image
+    # Charger les images
+    blackjack_image = PhotoImage(file="images/blackjack.png")
+    kamikaze_image = PhotoImage(file="images/kamikaze.png")
+    commingsoon_image = PhotoImage(file="commingsoon.png")
+    
+    width = 200
+
+    # Afficher les images
+    blackjack_label = Label(frame, image=blackjack_image)
+    blackjack_label.bind("<Button-1>", lambda event: launch_blackjack_game())
+    blackjack_label.place(relx=0.25, rely=0.5, anchor=CENTER)
+
+    kamikaze_label = Label(frame, image=kamikaze_image)
+    # Associer un événement clic à l'image kamikaze pour lancer le jeu
+    kamikaze_label.bind("<Button-1>", lambda event: launch_kamikaze_game())
+    kamikaze_label.place(relx=0.75, rely=0.5, anchor=CENTER)
+
+    commingsoon_label = Label(frame, image=commingsoon_image)
+    commingsoon_label.pack(pady=10)
     menu = Menu(home_window)
+
     home_window.config(menu=menu)
 
     # Menu Utilisateur
